@@ -2,7 +2,7 @@
 
 #variables
 myname='Moinul'
-s3_bucket='s3://upgrad-moinul'
+s3_bucket='upgrad-moinul'
 timestamp=`date '+%d%m%Y-%H%M%S'`
 
 #updating with uptodate repository 
@@ -57,7 +57,7 @@ cd - > /dev/null
 echo " >>>>>>>>>> Tar backup created "
 
 #moving tar file to S3 bucket
-aws s3 cp /tmp/$myname-httpd-logs-$timestamp.tar $s3_bucket > /dev/null
+aws s3 cp /tmp/$myname-httpd-logs-$timestamp.tar s3://$s3_bucket/$myname-httpd-logs-$timestamp.tar > /dev/null
 echo " >>>>>>>>>> TAR backup moved to S3 "
 
 #removing created tar file for cleanup/housekeeping
