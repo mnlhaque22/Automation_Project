@@ -60,5 +60,29 @@ echo " >>>>>>>>>> Tar backup created "
 aws s3 cp /tmp/$myname-httpd-logs-$timestamp.tar s3://$s3_bucket/$myname-httpd-logs-$timestamp.tar > /dev/null
 echo " >>>>>>>>>> TAR backup moved to S3 "
 
-#removing created tar file for cleanup/housekeeping
+#Bookkeeping TASK-3 
+
+#making track of S3 file copy
+file_size=`ls -lh /tmp/$myname-httpd-logs-$timestamp.tar | cut -d " " -f5`
+if [ -e /var/www/html/inventory.html ]
+then
+        echo -e " <p> httpd-logs    &emsp; 	$timestamp  &emsp; &emsp; tar  &emsp; $file_size </p> \n" >>/var/www/html/inventory.html
+	echo " >>>>>>>>>> Data added to bookkeeping file"
+else
+	echo " >>>>>>>>>> Bookkeeping file not exist creating it and making entry"
+        touch /var/www/html/inventory.html
+        echo -e " <p> Log Type       &emsp;  Date Created &emsp; &emsp; &emsp;    Type	 &emsp;   Size </p> \n" >/var/www/html/inventory.html
+	echo -e " <p> httpd-logs    &emsp;  $timestamp  &emsp; &emsp; tar  &emsp; $file_size </p> \n" >>/var/www/html/inventory.html
+fi
+
+#creating cronjob if not exist for this script to run daily once
+if [ ! -e /etc/cron.d/automation ]
+then
+	echo " >>>>>>>>>> CronJob doesnot exist , creating it "
+	touch /etc/cron.d/automation
+	echo "0 0 * * * root /root/Automation_Project/automation.sh > /dev/null "	> /etc/cron.d/automation
+fi
+
+
+
 
